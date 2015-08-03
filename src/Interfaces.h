@@ -22,6 +22,9 @@ namespace SaneAudioRenderer
         STDMETHOD_(void, SetAllowBitstreaming)(BOOL bAllowBitstreaming) = 0;
         STDMETHOD_(void, GetAllowBitstreaming)(BOOL* pbAllowBitstreaming) = 0;
 
+        STDMETHOD_(void, SetUseSystemLayoutChannels)(BOOL bUseSystemLayoutChannels) = 0;
+        STDMETHOD_(void, GetUseSystemLayoutChannels)(BOOL* pbUseSystemLayoutChannels) = 0;
+
         STDMETHOD_(void, SetCrossfeedEnabled)(BOOL bEnable) = 0;
         STDMETHOD_(void, GetCrossfeedEnabled)(BOOL* pbEnabled) = 0;
 

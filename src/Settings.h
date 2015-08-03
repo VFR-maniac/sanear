@@ -27,6 +27,9 @@ namespace SaneAudioRenderer
         STDMETHODIMP_(void) SetAllowBitstreaming(BOOL bAllowBitstreaming) override;
         STDMETHODIMP_(void) GetAllowBitstreaming(BOOL* pbAllowBitstreaming) override;
 
+        STDMETHODIMP_(void) SetUseSystemLayoutChannels(BOOL bUseSystemLayoutChannels) override;
+        STDMETHODIMP_(void) GetUseSystemLayoutChannels(BOOL* pbUseSystemLayoutChannels) override;
+
         STDMETHODIMP_(void) SetCrossfeedEnabled(BOOL bEnable) override;
         STDMETHODIMP_(void) GetCrossfeedEnabled(BOOL* pbEnabled) override;
 
@@ -42,6 +45,8 @@ namespace SaneAudioRenderer
         UINT32 m_buffer = OUTPUT_DEVICE_BUFFER_DEFAULT_MS;
 
         BOOL m_allowBitstreaming = TRUE;
+
+        BOOL m_useSystemLayoutChannels = TRUE;
 
         BOOL m_sharedModePeakLimiterEnabled = FALSE;
 

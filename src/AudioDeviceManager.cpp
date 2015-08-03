@@ -180,24 +180,49 @@ namespace SaneAudioRenderer
                     // Exclusive.
                     auto inputRate = format->nSamplesPerSec;
                     auto mixRate = mixFormat->nSamplesPerSec;
-                    auto mixChannels = mixFormat->nChannels;
-                    auto mixMask = DspMatrix::GetChannelMask(*mixFormat);
+
+                    BOOL useSystemLayoutChannels;
+                    pSettings->GetUseSystemLayoutChannels(&useSystemLayoutChannels);
+                    auto parity = useSystemLayoutChannels ? 1 : 0;
+
+                    auto nChannels = make_array(format->nChannels, mixFormat->nChannels);
+                    auto channelMask = make_array(DspMatrix::GetChannelMask(*format), DspMatrix::GetChannelMask(*mixFormat));
+
+                    auto nc0 = nChannels[parity];
+                    auto nc1 = nChannels[parity^1];
+                    auto cm0 = channelMask[parity];
+                    auto cm1 = channelMask[parity^1];
 
                     auto priorities = make_array(
-                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, 32, 32, inputRate, mixChannels, mixMask),
-                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 32, 32, inputRate, mixChannels, mixMask),
-                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 24, 24, inputRate, mixChannels, mixMask),
-                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 32, 24, inputRate, mixChannels, mixMask),
-                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 16, 16, inputRate, mixChannels, mixMask),
+                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, 32, 32, inputRate, nc0, cm0),
+                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 32, 32, inputRate, nc0, cm0),
+                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 24, 24, inputRate, nc0, cm0),
+                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 32, 24, inputRate, nc0, cm0),
+                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 16, 16, inputRate, nc0, cm0),
 
-                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, 32, 32, mixRate, mixChannels, mixMask),
-                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 32, 32, mixRate, mixChannels, mixMask),
-                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 24, 24, mixRate, mixChannels, mixMask),
-                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 32, 24, mixRate, mixChannels, mixMask),
-                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 16, 16, mixRate, mixChannels, mixMask),
+                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, 32, 32, mixRate, nc0, cm0),
+                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 32, 32, mixRate, nc0, cm0),
+                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 24, 24, mixRate, nc0, cm0),
+                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 32, 24, mixRate, nc0, cm0),
+                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 16, 16, mixRate, nc0, cm0),
 
-                        WAVEFORMATEXTENSIBLE{BuildWaveFormat(WAVE_FORMAT_PCM, 16, inputRate, mixChannels)},
-                        WAVEFORMATEXTENSIBLE{BuildWaveFormat(WAVE_FORMAT_PCM, 16, mixRate, mixChannels)}
+                        WAVEFORMATEXTENSIBLE{BuildWaveFormat(WAVE_FORMAT_PCM, 16, inputRate, nc0)},
+                        WAVEFORMATEXTENSIBLE{BuildWaveFormat(WAVE_FORMAT_PCM, 16, mixRate, nc0)},
+
+                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, 32, 32, inputRate, nc1, cm1),
+                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 32, 32, inputRate, nc1, cm1),
+                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 24, 24, inputRate, nc1, cm1),
+                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 32, 24, inputRate, nc1, cm1),
+                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 16, 16, inputRate, nc1, cm1),
+
+                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, 32, 32, mixRate, nc1, cm1),
+                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 32, 32, mixRate, nc1, cm1),
+                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 24, 24, mixRate, nc1, cm1),
+                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 32, 24, mixRate, nc1, cm1),
+                        BuildWaveFormatExt(KSDATAFORMAT_SUBTYPE_PCM, 16, 16, mixRate, nc1, cm1),
+
+                        WAVEFORMATEXTENSIBLE{BuildWaveFormat(WAVE_FORMAT_PCM, 16, inputRate, nc1)},
+                        WAVEFORMATEXTENSIBLE{BuildWaveFormat(WAVE_FORMAT_PCM, 16, mixRate, nc1)}
                     );
 
                     for (const auto& f : priorities)

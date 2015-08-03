@@ -19,6 +19,7 @@ namespace SaneAudioRenderer
         {
             ExclusiveMode = 10,
             AllowBitstreaming,
+            UseSystemLayoutChannels,
             EnableCrossfeed,
             CrossfeedCMoy,   // used in CheckMenuRadioItem()
             CrossfeedJMeier, // used in CheckMenuRadioItem()
@@ -191,6 +192,9 @@ namespace SaneAudioRenderer
         BOOL allowBitstreaming;
         m_settings->GetAllowBitstreaming(&allowBitstreaming);
 
+        BOOL useSystemLayoutChannels;
+        m_settings->GetUseSystemLayoutChannels(&useSystemLayoutChannels);
+
         BOOL crossfeedEnabled;
         m_settings->GetCrossfeedEnabled(&crossfeedEnabled);
 
@@ -230,6 +234,11 @@ namespace SaneAudioRenderer
         check.wID = Item::ExclusiveMode;
         check.dwTypeData = L"Exclusive WASAPI mode";
         check.fState = (exclusive ? MFS_CHECKED : MFS_UNCHECKED);
+        InsertMenuItem(hMenu, 0, TRUE, &check);
+
+        check.wID = Item::UseSystemLayoutChannels;
+        check.dwTypeData = L"Use system layout channels";
+        check.fState = (useSystemLayoutChannels ? MFS_CHECKED : MFS_UNCHECKED);
         InsertMenuItem(hMenu, 0, TRUE, &check);
 
         InsertMenuItem(hMenu, 0, TRUE, &separator);
@@ -332,6 +341,14 @@ namespace SaneAudioRenderer
                 BOOL value;
                 m_settings->GetAllowBitstreaming(&value);
                 m_settings->SetAllowBitstreaming(!value);
+                break;
+            }
+
+            case Item::UseSystemLayoutChannels:
+            {
+                BOOL value;
+                m_settings->GetUseSystemLayoutChannels(&value);
+                m_settings->SetUseSystemLayoutChannels(!value);
                 break;
             }
 

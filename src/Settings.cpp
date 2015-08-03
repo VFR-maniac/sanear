@@ -92,6 +92,25 @@ namespace SaneAudioRenderer
             *pbAllowBitstreaming = m_allowBitstreaming;
     }
 
+    STDMETHODIMP_(void) Settings::SetUseSystemLayoutChannels(BOOL bUseSystemLayoutChannels)
+    {
+        CAutoLock lock(this);
+
+        if (m_useSystemLayoutChannels != bUseSystemLayoutChannels)
+        {
+            m_useSystemLayoutChannels = bUseSystemLayoutChannels;
+            m_serial++;
+        }
+    }
+
+    STDMETHODIMP_(void) Settings::GetUseSystemLayoutChannels(BOOL* pbUseSystemLayoutChannels)
+    {
+        CAutoLock lock(this);
+
+        if (pbUseSystemLayoutChannels)
+            *pbUseSystemLayoutChannels = m_useSystemLayoutChannels;
+    }
+
     STDMETHODIMP_(void) Settings::SetCrossfeedEnabled(BOOL bEnable)
     {
         CAutoLock lock(this);

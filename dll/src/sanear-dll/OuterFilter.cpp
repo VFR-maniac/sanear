@@ -11,6 +11,7 @@ namespace SaneAudioRenderer
         const auto DeviceExclusive = L"DeviceExclusive";
         const auto DeviceBufferDuration = L"DeviceBufferDuration";
         const auto AllowBitstreaming = L"AllowBitstreaming";
+        const auto UseSystemLayoutChannels = L"UseSystemLayoutChannels";
         const auto CrossfeedEnabled = L"CrossfeedEnabled";
         const auto CrossfeedCutoffFrequency = L"CrossfeedCutoffFrequency";
         const auto CrossfeedLevel = L"CrossfeedLevel";
@@ -39,6 +40,9 @@ namespace SaneAudioRenderer
 
         m_settings->GetAllowBitstreaming(&boolValue);
         m_registryKey.SetUint(AllowBitstreaming, boolValue);
+
+        m_settings->GetUseSystemLayoutChannels(&boolValue);
+        m_registryKey.SetUint(UseSystemLayoutChannels, boolValue);
 
         m_settings->GetCrossfeedEnabled(&boolValue);
         m_registryKey.SetUint(CrossfeedEnabled, boolValue);
@@ -86,6 +90,9 @@ namespace SaneAudioRenderer
 
         if (m_registryKey.GetUint(AllowBitstreaming, uintValue1))
             m_settings->SetAllowBitstreaming(uintValue1);
+
+        if (m_registryKey.GetUint(UseSystemLayoutChannels, uintValue1))
+            m_settings->SetUseSystemLayoutChannels(uintValue1);
 
         if (m_registryKey.GetUint(CrossfeedEnabled, uintValue1))
             m_settings->SetCrossfeedEnabled(uintValue1);
